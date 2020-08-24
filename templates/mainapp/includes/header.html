@@ -1,0 +1,42 @@
+{% load static %}
+
+<div class="main-banner bg bg1" id="home" style="margin-top: 0px;">
+    <header class="header" style="background-image:url({% static 'logo.png' %});">
+        <nav class="py-4">
+            <div id="logo">
+                <h1>
+                    <a href="#" class="editContent" style="outline: none; outline-offset: -2px; color: rgb(0, 0, 0);
+                    text-shadow: white 0 0 2px;  font-size: 40px; sans-serif;"> Автосервис "ебать ты чо сломался?"</a>
+                </h1>
+            </div>
+            <ul class="menu mt-2" style="float:right; display:block">
+                {% if user.is_anonymous %}
+                <li>
+                    <a href="#" style="font-weight: 700; text-transform: uppercase;">Sign UP</a>
+                </li>
+                {% else %}
+                <li>
+                    <a href="#"
+                       style="font-weight: 700; text-transform: uppercase;">Exit</a>
+                </li>
+                <li>
+                    <a href="#"
+                       style="font-weight: 700; text-transform: uppercase;">My profile</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    <div class="banner-info">
+        <p class="editContentCenter">Привет гордый "{{request.user}}"</p>
+        <h3 class="mb-4 editContent"></h3>
+        <div class="ban-buttons">
+        </div>
+    </div>
+</div>
+<ol class="breadcrumb editContent">
+    <li class="breadcrumb-item">
+        <a href="/{{content.url}}" class="editContent">Main</a>
+    </li>
+    <li class="breadcrumb-item active editContent">Main</li>
+</ol>
