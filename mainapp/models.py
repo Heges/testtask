@@ -1,17 +1,10 @@
 import jwt
-
-from datetime import datetime
 from datetime import timedelta
 
 from django.conf import settings
-from django.contrib.auth.base_user import BaseUserManager
 from django.db import models
-from django.core import validators
 from django.contrib.auth.models import AbstractBaseUser, User
-from django.contrib.auth.models import PermissionsMixin
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.dispatch import receiver
-from django.db.models.signals import post_save
 
 
 class Masters(models.Model):
@@ -43,6 +36,7 @@ class Service(models.Model):
     name_master = models.ForeignKey(Masters, verbose_name='Мастер', on_delete=models.CASCADE)
     client_to_job = models.ForeignKey(User, verbose_name='Клиент', on_delete=models.CASCADE)
     work_on = models.CharField(verbose_name='Рабочие часы', choices=worked_hours, max_length=30)
+    data_to_work = models.DateField(verbose_name='День записи')
 
     class Meta:
         verbose_name = 'Сервис'

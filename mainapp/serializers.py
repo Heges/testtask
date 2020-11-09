@@ -67,6 +67,7 @@ class SerializerServiceRegistration(serializers.ModelSerializer):
     name_master = SerializerMasters()
     client_to_job = UserSerializerView()
     work_on = serializers.models.CharField(choices=Service.worked_hours)
+    data_to_work = serializers.models.DateField()
 
     class Meta:
         model = Service
@@ -74,8 +75,8 @@ class SerializerServiceRegistration(serializers.ModelSerializer):
 
 
 class SerializerCreateServiceCreate(serializers.ModelSerializer):
-
     work_on = serializers.models.CharField(choices=Service.worked_hours)
+    data_to_work = serializers.models.DateField()
 
     class Meta:
         model = Service
@@ -86,13 +87,35 @@ class SerializerCreateServiceCreate(serializers.ModelSerializer):
         return Service.objects.create(
             name_master=validated_data.get('name_master'),
             client_to_job=self.context['request'].user,
-            work_on=validated_data.get('work_on')
+            work_on=validated_data.get('work_on'),
+            data_to_work=validated_data.get('data_to_work')
         )
 
-    if work_on == '10:00':
-        raise serializers.ValidationError({'Время': 'ВЫберите другое время не 1'})
+    def validate(self, data):
+        all_value = Service.objects.filter(
+            name_master_id=data['name_master'],
+            work_on=data['work_on'],
+            data_to_work=data['data_to_work']).exists()
+        if all_value:
+            raise serializers.ValidationError("Выберите другое время")
+        return data
 
 
 class SerializerServiceCreate(SerializerCreateServiceCreate):
     name_master = SerializerMasters()
     client_to_job = UserSerializerView()
+
+
+class SerializerMasterPreView(serializers.ModelSerializer):
+    name_master = serializers.CharField(source='name_master.name')
+    work_on = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Service
+        fields = ['name_master', 'work_on', 'data_to_work', 'client_to_job']
+
+    def get_work_on(self, obj):
+        return obj.get_work_on_display()
+
+    def get_client_to_job(self, obj):
+        return obj.client_to_job_on_display()
